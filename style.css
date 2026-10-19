@@ -1,0 +1,410 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #020204, #0b0f17);
+  overflow: hidden;
+  color: #ffffff;
+  transition: background 1.2s ease-in-out;
+}
+
+/* Arka plan tuvali */
+#weather-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Sağ Üst Köşe Dil Seçim Rozeti */
+.lang-badge-container {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+.lang-dropdown {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.lang-dropdown:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.lang-dropdown option {
+  background: #12141c;
+  color: white;
+}
+
+/* Tam Ekran iOS Glassmorphic Konteyner */
+.weather-card {
+  position: relative;
+  z-index: 2;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(35px) saturate(190%);
+  -webkit-backdrop-filter: blur(35px) saturate(190%);
+  border: none;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.weather-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1), transparent 70%);
+  pointer-events: none;
+}
+
+/* İçerik Sınırlandırma */
+.search-container,
+.weather-main, 
+.advice-box,
+.weather-details, 
+.forecast-container,
+.app-footer {
+  width: 100%;
+  max-width: 520px;
+}
+
+.search-container {
+  position: relative;
+}
+
+/* Arama Kutusu */
+.search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 10px;
+}
+
+.search-box i.fa-magnifying-glass {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  width: 100%;
+  font-size: 14px;
+  flex: 1;
+}
+
+.search-box input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Kontrol ve Aksiyon Butonları */
+.control-btn,
+.search-box button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 6px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.control-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+}
+
+.control-btn:hover,
+.search-box button:hover {
+  transform: scale(1.18);
+  color: #ffffff;
+}
+
+/* Arama Önerileri */
+.suggestions-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: rgba(18, 20, 28, 0.95);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  overflow: hidden;
+  z-index: 10;
+  display: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.suggestion-item {
+  padding: 10px 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.2s ease;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* --- KIRMIZI ALAN: ANA HAVA DURUMU (GENİŞLETİLDİ) --- */
+.weather-main {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.weather-main h1 {
+  font-size: 36px; /* Büyütüldü */
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.weather-main p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+.temp-container {
+  margin-top: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#temperature {
+  font-size: 72px; /* Büyütüldü */
+  font-weight: 200;
+  line-height: 1;
+}
+
+.degree {
+  font-size: 24px;
+  font-weight: 300;
+  margin-top: 6px;
+}
+
+/* --- YEŞİL ALAN BAŞLANGICI: ÖNERİ KUTUSU (AŞAĞI KAYDIRILDI) --- */
+.advice-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 8px 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  margin-top: 20px; /* Yeşil alan ile kırmızı alan arasındaki mesafe artırıldı */
+}
+
+.advice-box p {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* Detay Kartları */
+.weather-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.detail-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.detail-box i {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.detail-info {
+  width: 100%;
+  text-align: center;
+}
+
+.detail-box span {
+  display: block;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.detail-box p {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+/* 5 Günlük Tahmin Alanı */
+.forecast-container h3 {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 5px;
+}
+
+.forecast-list {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.forecast-list::-webkit-scrollbar {
+  display: none;
+}
+
+.forecast-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 6px;
+  flex: 1;
+  min-width: 60px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.forecast-item span {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.forecast-item i {
+  font-size: 16px;
+  margin: 1px 0;
+}
+
+.forecast-item p {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Copyright Footer */
+.app-footer {
+  text-align: center;
+  margin-top: 4px;
+}
+
+.app-footer p {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.3px;
+}
+
+/* MOBİL UYUMLULUK OPTİMİZASYONU */
+@media screen and (max-width: 480px) {
+  .weather-card {
+    padding: 12px 10px;
+    gap: 8px;
+  }
+  .search-box {
+    padding: 5px 10px;
+  }
+  .weather-main h1 {
+    font-size: 28px;
+  }
+  #temperature {
+    font-size: 56px;
+  }
+  .degree {
+    font-size: 18px;
+  }
+  .advice-box {
+    margin-top: 10px;
+  }
+  .detail-box {
+    padding: 5px 6px;
+  }
+  .forecast-item {
+    padding: 8px 4px;
+    min-width: 50px;
+  }
+}
+
+/* Cam Üstü Su Damlaları */
+.glass-droplet {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8),
+              1px 2px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: dropSlide 8s ease-in-out infinite;
+  z-index: 4;
+}
+
+@keyframes dropSlide {
+  0% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(15px) scale(0.95, 1.1); opacity: 0.6; }
+  100% { transform: translateY(30px) scale(0.9, 1.2); opacity: 0; }
+}

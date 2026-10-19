@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hava Durumu</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- FontAwesome İkonları -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Arka Plan Efekt Tuvali -->
+  <canvas id="weather-canvas"></canvas>
+
+  <!-- Sağ Üst Köşe Dil Seçim Rozeti -->
+  <div class="lang-badge-container">
+    <select id="lang-select" class="lang-dropdown">
+      <option value="tr">TR</option>
+      <option value="en">EN</option>
+      <option value="es">ES</option>
+      <option value="zh">ZH</option>
+      <option value="hi">HI</option>
+      <option value="ar">AR</option>
+      <option value="fr">FR</option>
+      <option value="ru">RU</option>
+      <option value="pt">PT</option>
+      <option value="de">DE</option>
+    </select>
+  </div>
+
+  <!-- Tam Ekran iOS Glassmorphic Arayüz -->
+  <div class="weather-card">
+    
+    <!-- Üst Bar: Arama, Konum ve Derece Birim Değişimi -->
+    <div class="search-container">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="city-input" placeholder="İl veya ilçe ara..." autocomplete="off">
+        
+        <!-- GPS Konum Butonu (Sola Taşındı) -->
+        <button id="location-btn" title="Mevcut Konum">
+          <i class="fa-solid fa-location-dot"></i>
+        </button>
+
+        <!-- °C / °F Birim Butonu (Sağa Taşındı) -->
+        <button id="unit-toggle-btn" class="control-btn" title="Birim Değiştir">°C</button>
+
+        <button id="search-btn"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <!-- Otomatik Tamamlama Öneri Kutusu -->
+      <div id="suggestions-list" class="suggestions-list"></div>
+    </div>
+
+    <!-- Ana Derece & Şehir Alanı -->
+    <div class="weather-main">
+      <h1 id="city-name">İstanbul</h1>
+      <p id="weather-desc">Yükleniyor...</p>
+      <div class="temp-container">
+        <span id="temperature">--</span><span class="degree" id="unit-display">°C</span>
+      </div>
+    </div>
+
+    <!-- İkonsuz & Ortalı Akıllı Öneri Kutusu -->
+    <div class="advice-box">
+      <p id="weather-advice">Hava durumu bilgisine göre öneri hazırlanıyor...</p>
+    </div>
+
+    <!-- Detay Kartları (Yazılar Ortalandı) -->
+    <div class="weather-details">
+      <div class="detail-box">
+        <i class="fa-solid fa-droplet"></i>
+        <div class="detail-info">
+          <span id="lbl-humidity">Nem</span>
+          <p id="humidity">--</p>
+        </div>
+      </div>
+      <div class="detail-box">
+        <i class="fa-solid fa-wind"></i>
+        <div class="detail-info">
+          <span id="lbl-wind">Rüzgar</span>
+          <p id="wind-speed">--</p>
+        </div>
+      </div>
+      <div class="detail-box">
+        <i class="fa-solid fa-temperature-half"></i>
+        <div class="detail-info">
+          <span id="lbl-feels-like">Hissedilen</span>
+          <p id="feels-like">--</p>
+        </div>
+      </div>
+      <div class="detail-box">
+        <i class="fa-solid fa-cloud-rain"></i>
+        <div class="detail-info">
+          <span id="lbl-rain-chance">Yağış İhtimali</span>
+          <p id="rain-chance">--</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 Günlük Tahmin Alanı -->
+    <div class="forecast-container">
+      <h3 id="lbl-forecast-title">5 Günlük Tahmin</h3>
+      <div id="forecast-list" class="forecast-list">
+        <!-- JavaScript ile dolacak -->
+      </div>
+    </div>
+
+    <!-- Copyright Alt Bilgi -->
+    <footer class="app-footer">
+      <p>© 2026 Hava Durumu. Tüm hakları saklıdır.</p>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
